@@ -3,54 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard WebGIS Desa Cantik</title>
+    <title>Dashboard WebGIS Data SE</title>
     
-    <!-- Memanggil CSS Leaflet dari Internet -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet untuk Peta -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Memanggil File CSS buatan kita sendiri (nanti kita buat) -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <div class="header">
-        <h1>Dashboard WebGIS Desa Cantik</h1>
-        <p>Ringkasan pemutakhiran bangunan (Data SE)</p>
-    </div>
-
-    <!-- Tempat Kartu KPI (Section 1) -->
-    <div class="kpi-container">
-        <div class="card card-blue">
-            <h3>TOTAL RECORDS</h3>
-            <h2 id="total-data">0</h2>
-            <p>Titik Bangunan Terdata</p>
-        </div>
-        <div class="card card-purple">
-            <h3>TEMPAT TINGGAL</h3>
-            <h2 id="total-tinggal">0</h2>
-            <p>Bangunan Tempat Tinggal</p>
-        </div>
-        <div class="card card-orange">
-            <h3>CAMPURAN</h3>
-            <h2 id="total-campuran">0</h2>
-            <p>Bangunan Campuran</p>
-        </div>
-        <div class="card card-green">
-            <h3>KHUSUS USAHA</h3>
-            <h2 id="total-usaha">0</h2>
-            <p>Bangunan Khusus Usaha</p>
-        </div>
-    </div>
-
-    <!-- Tempat Peta (Section 3) -->
-    <div class="map-section">
-        <h2>Peta Sebaran Titik Bangunan</h2>
-        <div id="map"></div>
-    </div>
-
-    <!-- Memanggil JavaScript Leaflet & PapaParse (untuk baca CSV) -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- PapaParse (CSV) & Chart.js (Grafik) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <!-- Memanggil File JS buatan kita sendiri (nanti kita buat) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Simple DataTables (Untuk Fitur Pencarian & Sort Tabel) -->
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+    <style>
+        #map, #smart-map { height: 500px; width: 100%; border-radius: 0.5rem; z-index: 1; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+        /* Kustomisasi Tabel agar senada dengan Tailwind */
+        .dataTable-table th { background-color: #f8fafc; text-align: left; padding: 12px; }
+        .dataTable-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px;}
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <header class="bg-white shadow-sm px-6 py-4 flex items-center gap-4">
+        <div class="bg-blue-600 text-white p-2 rounded-lg font-bold">TAPO</div>
+        <div>
+            <h1 class="text-xl font-bold text-gray-800">Dashboard WebGIS Data SE</h1>
+            <p class="text-xs text-gray-500">Ringkasan pemutakhiran bangunan</p>
+        </div>
+    </header>
+
+    <!-- Tab Navigasi (3 Halaman) -->
+    <nav class="bg-white px-6 border-b flex gap-6 text-sm text-gray-500 mt-4 overflow-x-auto">
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="py-3 tab-active whitespace-nowrap">Dashboard</button>
+        <button onclick="switchTab('map')" id="btn-map" class="py-3 hover:text-blue-600 whitespace-nowrap">Smart Map</button>
+        <button onclick="switchTab('data')" id="btn-data" class="py-3 hover:text-blue-600 whitespace-nowrap">Rincian Data SE</button>
+    </nav>
+
+    <!-- HALAMAN 1: DASHBOARD -->
+    <main id="tab-dashboard" class="p-6">
+        <!-- Section 1: KPI Cards (Sesuai Rincian Catatan 1) -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="text-[10px] font-bold text-gray-400">TOTAL DATA VALID</h3>
+                <h2 id="kpi-total" class="text-2xl font-bold mt-1 text-gray-700">0</h2>
+                <p class="text-[10px] text-gray-500 mt-1">Records yang ada</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-t-4 border-blue-500">
+                <h3 class="text-[10px] font-bold text-gray-400">% CAPAIAN TOTAL</h3>
+                <h2 id="kpi-persen-total" class="text-2xl font-bold mt-1 text-blue-600">0%</h2>
+                <p class="text-[10px] text-gray-500 mt-1">Dari target keseluruhan</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-t-4 border-emerald-500">
+                <h3 class="text-[10px] font-bold text-gray-400">% KHUSUS USAHA</h3>
+                <h2 id="kpi-persen-usaha" class="text-2xl font-bold mt-1 text-emerald-600">0%</h2>
+                <p class="text-[10px] text-gray-500 mt-1">Capaian thd target</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-t-4 border-orange-500">
+                <h3 class="text-[10px] font-bold text-gray-400">% CAMPURAN</h3>
+                <h2 id="kpi-persen-campuran" class="text-2xl font-bold mt-1 text-orange-600">0%</h2>
+                <p class="text-[10px] text-gray-500 mt-1">Capaian thd target</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-t-4 border-purple-500">
+                <h3 class="text-[10px] font-bold text-gray-400">% TEMPAT TINGGAL</h3>
+                <h2 id="kpi-persen-tinggal" class="text-2xl font-bold mt-1 text-purple-600">0%</h2>
+                <p class="text-[10px] text-gray-500 mt-1">Capaian thd target</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Section 2: Donut Chart -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border col-span-1">
+                <h2 class="text-md font-bold mb-4">Persentase Records</h2>
+                <canvas id="donutChart"></canvas>
+            </div>
+            
+            <!-- Section 3: Peta Sebaran Mini -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border col-span-2">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-md font-bold">Peta Sebaran & Capaian</h2>
+                </div>
+                <div id="map"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- HALAMAN 2: SMART MAP (Rincian Catatan 2) -->
+    <main id="tab-map" class="p-6 hidden">
+        <div class="bg-white p-4 rounded-xl shadow-sm border mb-4 flex gap-4 bg-gray-50">
+            <select class="p-2 border rounded text-sm"><option>Semua Kecamatan</option></select>
+            <select class="p-2 border rounded text-sm"><option>Semua Desa</option></select>
+            <select class="p-2 border rounded text-sm"><option>Semua ID SLS</option></select>
+            <div class="ml-auto flex gap-2">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded text-sm">Peta Sebaran</button>
+                <button class="bg-white border px-4 py-2 rounded text-sm">Peta Capaian</button>
+            </div>
+        </div>
+        <div id="smart-map"></div>
+    </main>
+
+    <!-- HALAMAN 3: DATA SE & LOGBOOK (Rincian Catatan 3) -->
+    <main id="tab-data" class="p-6 hidden">
+        <div class="bg-white p-6 rounded-xl shadow-sm border">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-md font-bold">Rincian Data Mentah (Tabel SE)</h2>
+                <span id="disclaimer-date" class="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">
+                    Data terakhir diperbarui: Loading...
+                </span>
+            </div>
+            
+            <!-- Tempat Tabel Canggih -->
+            <table id="dataTable" class="w-full"></table>
+            
+            <!-- Logbook Penambahan Data Harian -->
+            <div class="mt-8 border-t pt-6">
+                <h3 class="text-md font-bold mb-4">Logbook Tambahan Harian</h3>
+                <div id="logbook-container" class="space-y-3">
+                    <!-- Data logbook akan digenerate otomatis oleh JS di sini -->
+                </div>
+            </div>
+        </div>
+    </main>
+
     <script src="app.js"></script>
 </body>
 </html>
