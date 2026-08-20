@@ -8,7 +8,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // 3. Masukkan LINK CSV PUBLIK dari Google Sheets kamu di sini
-const csvUrl = 'ISI_DENGAN_LINK_CSV_PUBLIK_KAMU'; 
+const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTYfUrwzyFJ3Kdvz4GHNZ9EUK6gdxd-Vz6GP_0fyAGnyj4X-3NkZfeiRxwM69r34swN6xQa5zrZXR2H/pubhtml'; 
 
 // 4. Proses Ambil Data, BERSIHKAN OTOMATIS, lalu Tampilkan
 fetch(csvUrl)
