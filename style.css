@@ -1,0 +1,76 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fb;
+    margin: 0;
+    padding: 20px;
+}
+
+.header h1 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.header p {
+    color: #777;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Mengatur Layout Kartu KPI agar berjejer ke samping */
+.kpi-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.card h2 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.card p {
+    margin: 10px 0 0 0;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Warna Kartu sesuai gambar referensi kamu */
+.card-blue { background-color: #3b82f6; }
+.card-purple { background-color: #8b5cf6; }
+.card-orange { background-color: #f97316; }
+.card-green { background-color: #10b981; }
+
+/* Pengaturan Peta */
+.map-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.map-section h2 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+    border-radius: 8px;
+    z-index: 1; /* Agar popup leaflet tidak tertutup elemen lain */
+}
