@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard WebGIS Desa Cantik</title>
+    
+    <!-- Memanggil CSS Leaflet dari Internet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Memanggil File CSS buatan kita sendiri (nanti kita buat) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="header">
+        <h1>Dashboard WebGIS Desa Cantik</h1>
+        <p>Ringkasan pemutakhiran bangunan (Data SE)</p>
+    </div>
+
+    <!-- Tempat Kartu KPI (Section 1) -->
+    <div class="kpi-container">
+        <div class="card card-blue">
+            <h3>TOTAL RECORDS</h3>
+            <h2 id="total-data">0</h2>
+            <p>Titik Bangunan Terdata</p>
+        </div>
+        <div class="card card-purple">
+            <h3>TEMPAT TINGGAL</h3>
+            <h2 id="total-tinggal">0</h2>
+            <p>Bangunan Tempat Tinggal</p>
+        </div>
+        <div class="card card-orange">
+            <h3>CAMPURAN</h3>
+            <h2 id="total-campuran">0</h2>
+            <p>Bangunan Campuran</p>
+        </div>
+        <div class="card card-green">
+            <h3>KHUSUS USAHA</h3>
+            <h2 id="total-usaha">0</h2>
+            <p>Bangunan Khusus Usaha</p>
+        </div>
+    </div>
+
+    <!-- Tempat Peta (Section 3) -->
+    <div class="map-section">
+        <h2>Peta Sebaran Titik Bangunan</h2>
+        <div id="map"></div>
+    </div>
+
+    <!-- Memanggil JavaScript Leaflet & PapaParse (untuk baca CSV) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Memanggil File JS buatan kita sendiri (nanti kita buat) -->
+    <script src="app.js"></script>
+</body>
+</html>
