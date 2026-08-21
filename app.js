@@ -28,7 +28,7 @@ function switchTab(tabName) {
 // ==========================================
 // 3. PENGOLAHAN DATA & LOGBOOK
 // ==========================================
-const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTYfUrwzyFJ3Kdvz4GHNZ9EUK6gdxd-Vz6GP_0fyAGnyj4X-3NkZfeiRxwM69r34swN6xQa5zrZXR2H/pubhtml'; // <--- GANTI LINK INI
+const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTYfUrwzyFJ3Kdvz4GHNZ9EUK6gdxd-Vz6GP_0fyAGnyj4X-3NkZfeiRxwM69r34swN6xQa5zrZXR2H/pub?output=ods'; // <--- GANTI LINK INI
 
 // Dummy Target (Bisa kamu ubah nilainya)
 const TARGET = { total: 20000, usaha: 3000, campuran: 5000, tinggal: 12000 };
